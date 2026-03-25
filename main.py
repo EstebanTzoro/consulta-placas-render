@@ -169,71 +169,485 @@ def html_escape(texto: str) -> str:
 
 
 # =========================
+# SHARED CSS + FONTS
+# =========================
+BASE_STYLES = """
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.15);
+    --accent: #c8f135;
+    --accent-dim: rgba(200,241,53,0.12);
+    --text: #f0f0f0;
+    --text-muted: #666680;
+    --text-soft: #9898b0;
+    --error-bg: rgba(255,80,80,0.08);
+    --error-border: rgba(255,80,80,0.25);
+    --error-text: #ff7070;
+    --success-bg: rgba(200,241,53,0.07);
+    --radius: 16px;
+    --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Noise texture overlay */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+}
+
+.page {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 28px 100px;
+}
+
+/* Header */
+.header {
+    margin-bottom: 52px;
+    animation: fadeUp 0.5s ease both;
+}
+
+.header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+}
+
+.header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.header h1 span {
+    color: var(--accent);
+}
+
+.header-desc {
+    margin-top: 16px;
+    color: var(--text-soft);
+    font-size: 15px;
+    font-weight: 300;
+    max-width: 480px;
+    line-height: 1.7;
+}
+
+/* Cards */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    animation: fadeUp 0.5s ease both;
+    transition: border-color 0.2s;
+}
+
+.card:hover {
+    border-color: var(--border-hover);
+}
+
+.card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* Textarea */
+textarea {
+    width: 100%;
+    height: 200px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    padding: 18px 20px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.04em;
+}
+
+textarea::placeholder { color: var(--text-muted); }
+
+textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+/* Button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none;
+    padding: 14px 26px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 24px rgba(200,241,53,0.2);
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 32px rgba(200,241,53,0.3);
+}
+
+.btn:active { transform: translateY(0); }
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-soft);
+    border: 1px solid var(--border);
+    box-shadow: none;
+    font-weight: 500;
+}
+
+.btn-ghost:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+    box-shadow: none;
+    background: var(--surface2);
+}
+
+/* Hint */
+.hint {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+}
+
+.hint a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.hint a:hover { text-decoration: underline; }
+
+/* Stats grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.stat-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px 18px;
+    transition: border-color 0.2s;
+}
+
+.stat-item:hover { border-color: var(--border-hover); }
+
+.stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Cols */
+.cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+    .cols { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Placa tags */
+.placa-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.placa-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 5px 11px;
+    border-radius: 6px;
+    color: var(--text-soft);
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.placa-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.placa-empty {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 0;
+}
+
+/* Error / success banners */
+.banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 22px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.banner-error {
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
+}
+
+.banner-success {
+    background: var(--success-bg);
+    border: 1px solid rgba(200,241,53,0.2);
+    color: var(--accent);
+}
+
+.banner-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 28px 0;
+}
+
+/* Back link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 40px;
+    transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--accent); }
+
+/* Animations */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card:nth-child(2) { animation-delay: 0.08s; }
+.card:nth-child(3) { animation-delay: 0.16s; }
+
+/* Actions row */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+/* Card title */
+.card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+/* Loading state */
+.btn-loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+"""
+
+LOADING_JS = """
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(function(form) {
+        form.addEventListener('submit', function() {
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn) {
+                btn.classList.add('btn-loading');
+                btn.innerHTML = '<svg class="btn-icon spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Consultando...';
+            }
+        });
+    });
+});
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }
+</style>
+"""
+
+
+# =========================
 # RUTAS
 # =========================
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return """
-    <html>
-        <head>
-            <title>Consulta de placas</title>
-            <style>
-                body { font-family: Arial, sans-serif; max-width: 950px; margin: 40px auto; padding: 0 20px; background: #ffffff; color: #111827; }
-                h1 { margin-bottom: 8px; }
-                p { color: #444; line-height: 1.5; }
-                textarea { width: 100%; height: 220px; font-size: 14px; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; }
-                button { background: #111827; color: white; border: none; padding: 12px 18px; font-size: 14px; border-radius: 8px; cursor: pointer; }
-                button:hover { opacity: 0.92; }
-                .box { background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; border-radius: 14px; }
-                .hint { font-size: 13px; color: #6b7280; margin-top: 12px; }
-                .summary { margin-top: 22px; padding: 18px; border-radius: 14px; background: #f3f4f6; border: 1px solid #e5e7eb; }
-                .kpi { margin: 8px 0; font-size: 15px; }
-                .download-btn { display: inline-block; margin-top: 18px; background: #111827; color: white; text-decoration: none; padding: 12px 18px; border-radius: 8px; }
-                .download-btn:hover { opacity: 0.92; }
-                .muted { color: #6b7280; }
-                .error-box { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 16px; border-radius: 12px; }
-            </style>
-        </head>
-        <body>
-            <h1>Consulta de placas</h1>
-            <p>
-                Pega una o varias placas separadas por coma, punto y coma o salto de línea.
-                El sistema consultará el archivo y te devolverá un Excel con las hojas
-                <b>Escenarios</b> y <b>Escenarios_Estimado</b>, filtradas por las placas consultadas.
-            </p>
+    return f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Placas</title>
+    <style>{BASE_STYLES}</style>
+</head>
+<body>
+<div class="page">
 
-            <div class="box">
-                <form action="/consultar-form" method="post">
-                    <textarea name="placas_texto" placeholder="ABC123
-DEF456
-GHI789"></textarea>
-                    <br><br>
-                    <button type="submit">Consultar placas</button>
-                </form>
-                <div class="hint">
-                    También puedes probar la API en <a href="/docs">/docs</a>
-                </div>
+    <header class="header">
+        <div class="header-eyebrow">Sistema de consulta</div>
+        <h1>Consulta de <span>Placas</span></h1>
+        <p class="header-desc">
+            Ingresa una o varias placas para obtener los registros filtrados
+            de las hojas <strong>Escenarios</strong> y <strong>Escenarios_Estimado</strong> en formato Excel.
+        </p>
+    </header>
+
+    <div class="card">
+        <div class="card-label">Placas a consultar</div>
+        <form action="/consultar-form" method="post">
+            <textarea
+                name="placas_texto"
+                placeholder="ABC123&#10;DEF456&#10;GHI789&#10;&#10;Separa por coma, punto y coma o salto de línea"
+                autofocus
+            ></textarea>
+            <div class="actions">
+                <button class="btn" type="submit">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Consultar placas
+                </button>
+                <span class="hint">También disponible en <a href="/docs">/docs</a></span>
             </div>
-        </body>
-    </html>
-    """
+        </form>
+    </div>
+
+</div>
+{LOADING_JS}
+</body>
+</html>"""
 
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {{"ok": True}}
 
 
 @app.post("/refresh-cache")
 def refresh_cache():
     data = cargar_datos(force_refresh=True)
-    return {
+    return {{
         "ok": True,
         "rows_escenarios": len(data["escenarios"]),
         "rows_escenarios_estimado": len(data["escenarios_estimado"]),
         "placas_unicas_escenarios": int(data["escenarios"][COL_PLACA].nunique()),
         "placas_unicas_escenarios_estimado": int(data["escenarios_estimado"][COL_PLACA].nunique()),
-    }
+    }}
 
 
 @app.get("/descargar")
@@ -256,8 +670,8 @@ def descargar_excel(placas: str):
 
     excel_io = excel_resultado_bytes(df_escenarios_filtrado, df_estimado_filtrado)
 
-    nombre = f"consulta_placas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-    headers = {"Content-Disposition": f'attachment; filename="{nombre}"'}
+    nombre = f"consulta_placas_{{datetime.now().strftime('%Y%m%d_%H%M%S')}}.xlsx"
+    headers = {{"Content-Disposition": f'attachment; filename="{{nombre}}"'}}
 
     return StreamingResponse(
         excel_io,
@@ -271,17 +685,40 @@ def consultar_form(placas_texto: str = Form(...)):
     placas = limpiar_placas(placas_texto)
 
     if not placas:
-        return """
-        <html>
-            <head><title>Consulta de placas</title></head>
-            <body style="font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px;">
-                <div class="error-box" style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:16px;border-radius:12px;">
-                    Debes ingresar al menos una placa.
-                </div>
-                <p><a href="/">Volver</a></p>
-            </body>
-        </html>
-        """
+        return f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Placas</title>
+    <style>{BASE_STYLES}</style>
+</head>
+<body>
+<div class="page">
+    <a class="back-link" href="/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Volver al inicio
+    </a>
+    <div class="banner banner-error">
+        <svg class="banner-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Debes ingresar al menos una placa para realizar la consulta.
+    </div>
+    <div class="card">
+        <div class="card-label">Reintentar consulta</div>
+        <form action="/consultar-form" method="post">
+            <textarea name="placas_texto" placeholder="ABC123&#10;DEF456&#10;GHI789" autofocus></textarea>
+            <div class="actions">
+                <button class="btn" type="submit">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Consultar placas
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{LOADING_JS}
+</body>
+</html>"""
 
     data = cargar_datos()
 
@@ -297,111 +734,121 @@ def consultar_form(placas_texto: str = Form(...)):
     total_placas_esc = len(placas_encontradas_esc)
     total_placas_est = len(placas_encontradas_est)
 
-    placas_query = "\n".join(placas)
+    placas_query = "\\n".join(placas)
 
-    placas_esc_html = "<br>".join(html_escape(p) for p in placas_encontradas_esc) if placas_encontradas_esc else "<span class='muted'>No se encontraron placas en esta hoja.</span>"
-    placas_est_html = "<br>".join(html_escape(p) for p in placas_encontradas_est) if placas_encontradas_est else "<span class='muted'>No se encontraron placas en esta hoja.</span>"
+    # Build placa tag lists
+    if placas_encontradas_esc:
+        placas_esc_html = '<div class="placa-list">' + "".join(
+            f'<span class="placa-tag">{html_escape(p)}</span>' for p in placas_encontradas_esc
+        ) + '</div>'
+    else:
+        placas_esc_html = '<p class="placa-empty">— Sin resultados en esta hoja</p>'
 
-    if total_registros_esc == 0 and total_registros_est == 0:
-        return f"""
-        <html>
-            <head>
-                <title>Resultado de consulta</title>
-                <style>
-                    body {{ font-family: Arial, sans-serif; max-width: 950px; margin: 40px auto; padding: 0 20px; }}
-                    .box {{ background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; border-radius: 14px; }}
-                    .error-box {{ background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:16px; border-radius:12px; }}
-                    .kpi {{ margin: 8px 0; }}
-                    .muted {{ color:#6b7280; }}
-                    textarea {{ width: 100%; height: 180px; font-size: 14px; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; }}
-                    button {{ background: #111827; color: white; border: none; padding: 12px 18px; font-size: 14px; border-radius: 8px; cursor: pointer; }}
-                </style>
-            </head>
-            <body>
-                <h1>Resultado de consulta</h1>
+    if placas_encontradas_est:
+        placas_est_html = '<div class="placa-list">' + "".join(
+            f'<span class="placa-tag">{html_escape(p)}</span>' for p in placas_encontradas_est
+        ) + '</div>'
+    else:
+        placas_est_html = '<p class="placa-empty">— Sin resultados en esta hoja</p>'
 
-                <div class="error-box">
-                    No se encontraron registros para las placas consultadas en ninguna de las dos hojas.
-                </div>
+    no_results = total_registros_esc == 0 and total_registros_est == 0
 
-                <div class="box" style="margin-top:20px;">
-                    <div class="kpi"><b>Placas consultadas:</b> {total_placas_consultadas}</div>
-                    <div class="kpi"><b>Placas encontradas en Escenarios:</b> {total_placas_esc}</div>
-                    <div class="kpi"><b>Placas encontradas en Escenarios_Estimado:</b> {total_placas_est}</div>
-                    <div class="kpi"><b>Registros encontrados en Escenarios:</b> {total_registros_esc}</div>
-                    <div class="kpi"><b>Registros encontrados en Escenarios_Estimado:</b> {total_registros_est}</div>
-                </div>
+    result_banner = ""
+    download_section = ""
 
-                <div class="box" style="margin-top:20px;">
-                    <h3>Consultar de nuevo</h3>
-                    <form action="/consultar-form" method="post">
-                        <textarea name="placas_texto">{html_escape(placas_query)}</textarea>
-                        <br><br>
-                        <button type="submit">Consultar placas</button>
-                    </form>
-                </div>
-            </body>
-        </html>
-        """
+    if no_results:
+        result_banner = """
+        <div class="banner banner-error">
+            <svg class="banner-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            No se encontraron registros para las placas consultadas en ninguna de las dos hojas.
+        </div>"""
+    else:
+        result_banner = """
+        <div class="banner banner-success">
+            <svg class="banner-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Consulta completada. El archivo Excel está listo para descargar.
+        </div>"""
+        download_section = f"""
+        <a class="btn" href="/descargar?placas={requests.utils.quote(placas_query)}">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar Excel filtrado
+        </a>"""
 
-    return f"""
-    <html>
-        <head>
-            <title>Resultado de consulta</title>
-            <style>
-                body {{ font-family: Arial, sans-serif; max-width: 1000px; margin: 40px auto; padding: 0 20px; background: #ffffff; color: #111827; }}
-                h1 {{ margin-bottom: 8px; }}
-                p {{ color: #444; line-height: 1.5; }}
-                .summary {{ margin-top: 22px; padding: 18px; border-radius: 14px; background: #f3f4f6; border: 1px solid #e5e7eb; }}
-                .kpi {{ margin: 8px 0; font-size: 15px; }}
-                .download-btn {{ display: inline-block; margin-top: 18px; background: #111827; color: white; text-decoration: none; padding: 12px 18px; border-radius: 8px; }}
-                .download-btn:hover {{ opacity: 0.92; }}
-                .cols {{ display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }}
-                .card {{ background: #f9fafb; border: 1px solid #e5e7eb; padding: 18px; border-radius: 14px; }}
-                .muted {{ color: #6b7280; }}
-                textarea {{ width: 100%; height: 180px; font-size: 14px; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; }}
-                button {{ background: #111827; color: white; border: none; padding: 12px 18px; font-size: 14px; border-radius: 8px; cursor: pointer; }}
-                @media (max-width: 800px) {{
-                    .cols {{ grid-template-columns: 1fr; }}
-                }}
-            </style>
-        </head>
-        <body>
-            <h1>Resultado de consulta</h1>
-            <p>La consulta terminó correctamente. Aquí puedes ver cuántas placas y registros se encontraron en cada hoja antes de descargar el Excel.</p>
+    return f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado — Consulta de Placas</title>
+    <style>{BASE_STYLES}</style>
+</head>
+<body>
+<div class="page">
 
-            <div class="summary">
-                <div class="kpi"><b>Placas consultadas:</b> {total_placas_consultadas}</div>
-                <div class="kpi"><b>Placas encontradas en Escenarios:</b> {total_placas_esc}</div>
-                <div class="kpi"><b>Placas encontradas en Escenarios_Estimado:</b> {total_placas_est}</div>
-                <div class="kpi"><b>Registros encontrados en Escenarios:</b> {total_registros_esc}</div>
-                <div class="kpi"><b>Registros encontrados en Escenarios_Estimado:</b> {total_registros_est}</div>
+    <a class="back-link" href="/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Nueva consulta
+    </a>
 
-                <a class="download-btn" href="/descargar?placas={requests.utils.quote(placas_query)}">
-                    Descargar Excel filtrado
-                </a>
+    <header class="header" style="margin-bottom: 32px;">
+        <div class="header-eyebrow">Resultado</div>
+        <h1>Resumen de <span>búsqueda</span></h1>
+    </header>
+
+    {result_banner}
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value">{total_placas_consultadas}</div>
+            <div class="stat-label">Placas consultadas</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{total_placas_esc}</div>
+            <div class="stat-label">Encontradas en Escenarios</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{total_placas_est}</div>
+            <div class="stat-label">Encontradas en Est. Estimado</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{total_registros_esc + total_registros_est}</div>
+            <div class="stat-label">Total registros encontrados</div>
+        </div>
+    </div>
+
+    <!-- Download CTA -->
+    {f'<div class="actions" style="margin-bottom: 28px;">{download_section}</div>' if download_section else ''}
+
+    <!-- Placa detail cards -->
+    <div class="cols">
+        <div class="card">
+            <div class="card-label">Escenarios</div>
+            <div class="card-title">{total_placas_esc} placa{"s" if total_placas_esc != 1 else ""} hallada{"s" if total_placas_esc != 1 else ""}</div>
+            {placas_esc_html}
+        </div>
+        <div class="card">
+            <div class="card-label">Escenarios Estimado</div>
+            <div class="card-title">{total_placas_est} placa{"s" if total_placas_est != 1 else ""} hallada{"s" if total_placas_est != 1 else ""}</div>
+            {placas_est_html}
+        </div>
+    </div>
+
+    <!-- New query -->
+    <div class="card" style="margin-top: 20px;">
+        <div class="card-label">Nueva consulta</div>
+        <form action="/consultar-form" method="post">
+            <textarea name="placas_texto">{html_escape(placas_query)}</textarea>
+            <div class="actions">
+                <button class="btn" type="submit">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Consultar de nuevo
+                </button>
             </div>
+        </form>
+    </div>
 
-            <div class="cols">
-                <div class="card">
-                    <h3>Placas encontradas en Escenarios</h3>
-                    <p>{placas_esc_html}</p>
-                </div>
-
-                <div class="card">
-                    <h3>Placas encontradas en Escenarios_Estimado</h3>
-                    <p>{placas_est_html}</p>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top:20px;">
-                <h3>Consultar de nuevo</h3>
-                <form action="/consultar-form" method="post">
-                    <textarea name="placas_texto">{html_escape(placas_query)}</textarea>
-                    <br><br>
-                    <button type="submit">Consultar placas</button>
-                </form>
-            </div>
-        </body>
-    </html>
-    """
+</div>
+{LOADING_JS}
+</body>
+</html>"""
