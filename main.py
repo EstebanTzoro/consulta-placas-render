@@ -172,7 +172,7 @@ def html_escape(texto: str) -> str:
 # SHARED CSS + FONTS
 # =========================
 BASE_STYLES = """
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Instrument+Sans:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -198,7 +198,7 @@ BASE_STYLES = """
 html { scroll-behavior: smooth; }
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -233,15 +233,16 @@ body::before {
 }
 
 .header-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.18em;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 14px;
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
     gap: 10px;
+    font-weight: 300;
 }
 
 .header-eyebrow::before {
@@ -253,25 +254,33 @@ body::before {
 }
 
 .header h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(32px, 5vw, 52px);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(44px, 6vw, 72px);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
     color: var(--text);
+}
+
+.header h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent);
 }
 
 .header h1 span {
     color: var(--accent);
+    font-style: italic;
 }
 
 .header-desc {
-    margin-top: 16px;
+    margin-top: 18px;
     color: var(--text-soft);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 300;
     max-width: 480px;
-    line-height: 1.7;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
 }
 
 /* Cards */
@@ -289,15 +298,16 @@ body::before {
 }
 
 .card-label {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Geist Mono', monospace;
     font-size: 10px;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-muted);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 8px;
+    font-weight: 300;
 }
 
 .card-label::after {
@@ -315,14 +325,15 @@ textarea {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--text);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Geist Mono', monospace;
     font-size: 13px;
-    line-height: 1.8;
+    line-height: 1.9;
     padding: 18px 20px;
     resize: vertical;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
+    font-weight: 300;
 }
 
 textarea::placeholder { color: var(--text-muted); }
@@ -340,11 +351,12 @@ textarea:focus {
     background: var(--accent);
     color: #0a0a0f;
     border: none;
-    padding: 14px 26px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    padding: 13px 24px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     border-radius: var(--radius-sm);
     cursor: pointer;
     text-decoration: none;
@@ -386,7 +398,9 @@ textarea:focus {
     margin-top: 14px;
     font-size: 12px;
     color: var(--text-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 300;
+    letter-spacing: 0.04em;
 }
 
 .hint a {
@@ -415,21 +429,23 @@ textarea:focus {
 .stat-item:hover { border-color: var(--border-hover); }
 
 .stat-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
     color: var(--accent);
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
 }
 
 .stat-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
-    line-height: 1.4;
+    line-height: 1.5;
+    font-weight: 300;
 }
 
 /* Cols */
@@ -454,15 +470,16 @@ textarea:focus {
 }
 
 .placa-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.06em;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
     background: var(--surface2);
     border: 1px solid var(--border);
-    padding: 5px 11px;
+    padding: 5px 12px;
     border-radius: 6px;
     color: var(--text-soft);
     transition: border-color 0.15s, color 0.15s;
+    font-weight: 300;
 }
 
 .placa-tag:hover {
@@ -471,10 +488,12 @@ textarea:focus {
 }
 
 .placa-empty {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Geist Mono', monospace;
     font-size: 12px;
     color: var(--text-muted);
     padding: 8px 0;
+    font-weight: 300;
+    font-style: italic;
 }
 
 /* Error / success banners */
@@ -517,13 +536,14 @@ textarea:focus {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.08em;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
     text-decoration: none;
     margin-bottom: 40px;
     transition: color 0.2s;
+    font-weight: 300;
 }
 
 .back-link:hover { color: var(--accent); }
@@ -548,11 +568,12 @@ textarea:focus {
 
 /* Card title */
 .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
     margin-bottom: 16px;
     color: var(--text);
+    letter-spacing: 0.01em;
 }
 
 /* Loading state */
@@ -635,24 +656,24 @@ def home():
 
 @app.get("/health")
 def health():
-    return {{"ok": True}}
+    return {"ok": True}
 
 
 @app.post("/refresh-cache")
 def refresh_cache():
     data = cargar_datos(force_refresh=True)
-    return {{
+    return {
         "ok": True,
         "rows_escenarios": len(data["escenarios"]),
         "rows_escenarios_estimado": len(data["escenarios_estimado"]),
         "placas_unicas_escenarios": int(data["escenarios"][COL_PLACA].nunique()),
         "placas_unicas_escenarios_estimado": int(data["escenarios_estimado"][COL_PLACA].nunique()),
-    }}
+    }
 
 
-@app.get("/descargar")
-def descargar_excel(placas: str):
-    placas_lista = limpiar_placas(placas)
+@app.post("/descargar")
+def descargar_excel(placas_texto: str = Form(...)):
+    placas_lista = limpiar_placas(placas_texto)
 
     if not placas_lista:
         raise HTTPException(status_code=400, detail="Debes enviar al menos una placa.")
@@ -670,8 +691,8 @@ def descargar_excel(placas: str):
 
     excel_io = excel_resultado_bytes(df_escenarios_filtrado, df_estimado_filtrado)
 
-    nombre = f"consulta_placas_{{datetime.now().strftime('%Y%m%d_%H%M%S')}}.xlsx"
-    headers = {{"Content-Disposition": f'attachment; filename="{{nombre}}"'}}
+    nombre = f"consulta_placas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    headers = {"Content-Disposition": f'attachment; filename="{nombre}"'}
 
     return StreamingResponse(
         excel_io,
@@ -734,7 +755,7 @@ def consultar_form(placas_texto: str = Form(...)):
     total_placas_esc = len(placas_encontradas_esc)
     total_placas_est = len(placas_encontradas_est)
 
-    placas_query = "\\n".join(placas)
+    placas_query = "\n".join(placas)
 
     # Build placa tag lists
     if placas_encontradas_esc:
@@ -769,10 +790,13 @@ def consultar_form(placas_texto: str = Form(...)):
             Consulta completada. El archivo Excel está listo para descargar.
         </div>"""
         download_section = f"""
-        <a class="btn" href="/descargar?placas={requests.utils.quote(placas_query)}">
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Descargar Excel filtrado
-        </a>"""
+        <form action="/descargar" method="post" style="margin:0;">
+            <textarea name="placas_texto" style="display:none;">{html_escape(placas_query)}</textarea>
+            <button class="btn" type="submit">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar Excel filtrado
+            </button>
+        </form>"""
 
     return f"""<!DOCTYPE html>
 <html lang="es">
