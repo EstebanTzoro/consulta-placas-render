@@ -117,6 +117,16 @@ def cargar_datos(force_refresh: bool = False) -> dict:
     df_escenarios[COL_PLACA] = df_escenarios[COL_PLACA].apply(normalizar_placa)
     df_estimado[COL_PLACA] = df_estimado[COL_PLACA].apply(normalizar_placa)
 
+    if "Rank" not in df_estimado.columns:
+        raise HTTPException(
+            status_code=500,
+            detail=f"La columna 'Rank' no existe en la hoja '{SHEET_ESCENARIOS_ESTIMADO}'. Columnas encontradas: {list(df_estimado.columns)}"
+        )
+
+    df_estimado["Rank"] = pd.to_numeric(df_estimado["Rank"], errors="coerce")
+    df_estimado = df_estimado[df_estimado["Rank"].isin([1, 2, 3, 4, 5])].copy()
+
+
     CACHE_DATA = {
         "escenarios": df_escenarios.copy(),
         "escenarios_estimado": df_estimado.copy(),
